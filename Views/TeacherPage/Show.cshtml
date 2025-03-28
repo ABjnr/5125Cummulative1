@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+@model _5125Cummulative1.Models.Teacher
+
+<div class="teacher-details">
+    <h1>@Model.FirstName @Model.LastName</h1>
+
+    <p><strong>Employee Number:</strong> @Model.EmployeeNumber</p>
+    <p><strong>Hire Date:</strong> @Model.HireDate.ToString("yyyy-MM-dd")</p>
+    <p><strong>Salary:</strong> @Model.Salary</p>
+</div>
+
+<style>
+    .teacher-details {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1.5px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+        .teacher-details h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .teacher-details p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .teacher-details strong {
+            color: #89DFF2;
+        }
+</style>

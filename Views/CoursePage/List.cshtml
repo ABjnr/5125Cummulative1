@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Courses List";
+}
+
+@model List<_5125Cummulative1.Models.Course>
+
+<h1>Courses</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Teacher ID</th>
+            <th>Start Date</th>
+            <th>Finish Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model)
+        {
+            <tr>
+                <td>@course.CourseCode</td>
+                <td>@course.CourseName</td>
+                <td>@course.TeacherId</td>
+                <td>@course.StartDate.ToString("yyyy-MM-dd")</td>
+                <td>@course.FinishDate.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1.5px solid;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #89DFF2;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
