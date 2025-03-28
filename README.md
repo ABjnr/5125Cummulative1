@@ -1,6 +1,6 @@
 # 5125Cummulative1
 
-This project is a Blazor application that manages a school database. It includes functionality for managing teachers, students, and courses.
+This project is an application that manages a school database. It includes functionality for managing teachers, students, and courses.
 
 ## Features
 
@@ -13,7 +13,6 @@ This project is a Blazor application that manages a school database. It includes
 
 - .NET 8
 - C# 12.0
-- Blazor
 - MySQL
 
 ## Getting Started
