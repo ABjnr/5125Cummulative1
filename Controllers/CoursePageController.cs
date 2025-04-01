@@ -8,7 +8,14 @@ namespace _5125Cummulative1.Controllers
     [Route("[controller]")]
     public class CoursePageController : Controller
     {
+        /// <summary>
+        /// This method gets all courses from the database and displays them in a list
+        /// </summary>
+        /// <returns>
+        /// A view displaying a list of courses
+        /// </returns>
         [HttpGet("List")]
+
         public IActionResult List()
         {
             List<Course> courses = new List<Course>();

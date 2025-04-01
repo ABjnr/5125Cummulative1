@@ -2,6 +2,9 @@
 
 namespace _5125Cummulative1.Models
 {
+    /// <summary>
+    /// Represents the context for accessing the school database
+    /// </summary>
     public class SchoolDBContext
     {
         private static string User { get { return "root"; } }
@@ -27,6 +30,11 @@ namespace _5125Cummulative1.Models
         //{
         //}
 
+
+        /// <summary>
+        /// Accesses the school database
+        /// </summary>
+        /// <returns>A MySqlConnection object for accessing the database</returns>
         public MySqlConnection AccessDatabase()
         {
             try

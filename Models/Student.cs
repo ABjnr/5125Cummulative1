@@ -1,5 +1,8 @@
 ﻿namespace _5125Cummulative1.Models
 {
+    /// <summary>
+    /// Represents the details of a teacher in the school database
+    /// </summary>
     public class Student
     {
         public int Id { get; set; }

@@ -9,10 +9,10 @@ namespace _5125Cummulative1.Controllers
     public class TeacherPageController : Controller
     {
         /// <summary>
-        /// This method gets all teachers from the database and displays them in a list.
+        /// This method gets all teachers from the database and displays them in a list
         /// </summary>
         /// <returns>
-        /// A view displaying a list of teachers.
+        /// A view displaying a list of teachers
         /// </returns>
         [HttpGet("List")]
         public IActionResult List()
@@ -60,11 +60,11 @@ namespace _5125Cummulative1.Controllers
         }
 
         /// <summary>
-        /// This method gets all information on a teacher by their ID and displays it.
+        /// This method gets all information on a teacher by their ID and displays it
         /// </summary>
-        /// <param name="id">The ID of the teacher.</param>
+        /// <param name="id">The ID of the teacher</param>
         /// <returns>
-        /// A view displaying the teacher's information.
+        /// A view displaying the teacher's information
         /// </returns>
         [HttpGet("Show/{id}")]
         public IActionResult Show(int id)

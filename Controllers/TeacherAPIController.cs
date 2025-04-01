@@ -11,14 +11,11 @@ namespace _5125Cummulative1.Controllers
     public class TeacherAPIController : ControllerBase
     {
         /// <summary>
-        /// This method gets all teachers from the database and outputs them in a list.
+        /// This method gets all teachers from the database and outputs them in a list
         /// </summary>
         /// <returns>
-        /// A list of strings representing each teacher's name.
+        /// A list of strings representing each teacher's name
         /// </returns>
-        /// <example>
-        /// GET api/TeacherAPI/ListTeachers -> ["John Doe", "Jane Smith", "Alice Johnson", ...]
-        /// </example>
         [HttpGet("ListTeachers")]
         public List<string> ListTeachers()
         {
@@ -59,15 +56,12 @@ namespace _5125Cummulative1.Controllers
         }
 
         /// <summary>
-        /// This method gets all information on a teacher by their ID.
+        /// This method gets all information on a teacher by their ID
         /// </summary>
-        /// <param name="id">The ID of the teacher.</param>
+        /// <param name="id">The ID of the teacher</param>
         /// <returns>
-        /// A string representing the teacher's information.
+        /// A string representing the teacher's information
         /// </returns>
-        /// <example>
-        /// GET api/TeacherAPI/GetTeacher/1 -> "John Doe, Math, 10 years experience"
-        /// </example>
         [HttpGet("GetTeacher/{id}")]
         public string GetTeacher(int id)
         {

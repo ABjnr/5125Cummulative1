@@ -60,3 +60,4 @@ C:\Users\adeni\source\repos\5125Cummulative1\5125Cummulative1\bin\Debug\net8.0\S
 C:\Users\adeni\source\repos\5125Cummulative1\5125Cummulative1\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\adeni\source\repos\5125Cummulative1\5125Cummulative1\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\adeni\source\repos\5125Cummulative1\5125Cummulative1\obj\Debug\net8.0\5125Cummulative1.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\adeni\source\repos\5125Cummulative1\5125Cummulative1\obj\Debug\net8.0\5125Cummulative1.sourcelink.json

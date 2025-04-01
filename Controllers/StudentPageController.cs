@@ -8,6 +8,12 @@ namespace _5125Cummulative1.Controllers
     [Route("[controller]")]
     public class StudentPageController : Controller
     {
+        /// <summary>
+        /// This method gets all students from the database and displays them in a list
+        /// </summary>
+        /// <returns>
+        /// A view displaying a list of students
+        /// </returns>
         [HttpGet("List")]
         public IActionResult List()
         {
