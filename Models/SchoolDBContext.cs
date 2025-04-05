@@ -26,9 +26,7 @@ namespace _5125Cummulative1.Models
             }
         }
 
-        //public SchoolDBContext()
-        //{
-        //}
+
 
 
         /// <summary>

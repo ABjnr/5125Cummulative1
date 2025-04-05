@@ -1,0 +1,40 @@
+﻿@model _5125Cummulative1.Models.Teacher
+
+@{
+    ViewData["Title"] = "Delete Teacher";
+}
+
+<h1>Delete Teacher</h1>
+
+<p>Are you sure you want to delete the following teacher?</p>
+
+<div>
+    <h4>@Model.FirstName @Model.LastName</h4>
+    <p><strong>Employee Number:</strong> @Model.EmployeeNumber</p>
+    <p><strong>Hire Date:</strong> @Model.HireDate.ToString("yyyy-MM-dd")</p>
+    <p><strong>Salary:</strong> @Model.Salary</p>
+</div>
+
+<form id="deleteForm" onsubmit="deleteTeacher(event)">
+    <input type="hidden" id="teacherId" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <script>
+        async function deleteTeacher(event) {
+            event.preventDefault();
+            const teacherId = document.getElementById('teacherId').value;
+            const response = await fetch(`/api/TeacherAPI/DeleteTeacher/${teacherId}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            if (data.rowsAffected > 0) {
+                window.location.href = data.redirectUrl;
+            } else {
+                console.error('Failed to delete teacher');
+            }
+        }
+    </script>
+}

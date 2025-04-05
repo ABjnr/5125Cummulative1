@@ -1,0 +1,70 @@
+﻿@model _5125Cummulative1.Models.Teacher
+
+@{
+    ViewData["Title"] = "Add New Teacher";
+}
+
+<h1>Add New Teacher</h1>
+
+<form id="addTeacherForm">
+    <div >
+        <label for="FirstName">First Name</label>
+        <input type="text" id="FirstName" />
+    </div>
+    <div >
+        <label for="LastName">Last Name</label>
+        <input type="text" id="LastName" />
+    </div>
+    <div >
+        <label for="EmployeeNumber">Employee Number</label>
+        <input type="text" id="EmployeeNumber"  />
+    </div>
+    <div>
+        <label for="HireDate">Hire Date</label>
+        <input type="date" id="HireDate" />
+    </div>
+    <div >
+        <label for="Salary">Salary</label>
+        <input type="number" id="Salary" />
+    </div>
+    <div >
+        <label for="WorkPhone">Work Phone</label>
+        <input type="text" id="WorkPhone"  />
+    </div>
+    <button type="button" onclick="addTeacher()">Add Teacher</button>
+</form>
+
+<script>
+    function addTeacher() {
+        var formData = {
+            FirstName: document.getElementById('FirstName').value,
+            LastName: document.getElementById('LastName').value,
+            EmployeeNumber: document.getElementById('EmployeeNumber').value,
+            HireDate: document.getElementById('HireDate').value,
+            Salary: document.getElementById('Salary').value,
+            WorkPhone: document.getElementById('WorkPhone').value
+        };
+
+        fetch('/api/TeacherAPI/AddTeacher', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                window.location.href = '/TeacherPage/Show/' + data;
+            } else {
+                alert('Error adding teacher');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+
+
+
+

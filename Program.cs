@@ -1,4 +1,5 @@
 using System;
+using _5125Cummulative1.Controllers;
 using _5125Cummulative1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,9 @@ builder.Services.AddSwaggerGen();
 
 // Database
 builder.Services.AddScoped<SchoolDBContext>();
+builder.Services.AddScoped<TeacherAPIController>();
+builder.Services.AddScoped<StudentAPIController>();
+builder.Services.AddScoped<CourseAPIController>();
 
 var app = builder.Build();
 

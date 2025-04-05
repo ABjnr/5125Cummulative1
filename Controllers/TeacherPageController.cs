@@ -5,114 +5,152 @@ using System.Collections.Generic;
 
 namespace _5125Cummulative1.Controllers
 {
-    [Route("[controller]")]
+    //[Route("[controller]")]
     public class TeacherPageController : Controller
     {
+        private readonly TeacherAPIController _api;
+
+        public TeacherPageController(TeacherAPIController api)
+        {
+            _api = api;
+        }
+
         /// <summary>
         /// This method gets all teachers from the database and displays them in a list
+        /// Example return data: 
+        /// [
+        ///     {
+        ///         "id": 1,
+        ///         "firstName": "Jane",
+        ///         "lastName": "Smith",
+        ///         "employeeNumber": "T12345",
+        ///         "hireDate": "2023-01-01T00:00:00",
+        ///         "salary": 50000.00
+        ///     }
+        /// ]
         /// </summary>
         /// <returns>
         /// A view displaying a list of teachers
         /// </returns>
-        [HttpGet("List")]
-        public IActionResult List()
+
+        [HttpGet]
+        [Route("[controller]/List")]
+        public IActionResult List(string SearchKey = null)
         {
-            List<Teacher> teachers = new List<Teacher>();
-
-            // The object that represents the school db connection
-            SchoolDBContext schoolContext = new SchoolDBContext();
-
-            // (MySqlConnection) we need to connect to the db
-            MySqlConnection connection = schoolContext.AccessDatabase();
-
-            // Open up the connection to our db
-            connection.Open();
-
-            // (MySqlCommand) we need to run an SQL command
-            MySqlCommand command = connection.CreateCommand();
-
-            // Select all teachers
-            string sql = "SELECT * FROM teachers";
-            command.CommandText = sql;
-
-            MySqlDataReader resultSet = command.ExecuteReader();
-            // For every one of the teachers in our result set (MySqlDataReader)
-            while (resultSet.Read())
-            {
-                // Create a new teacher object and add it to the list
-                Teacher teacher = new Teacher
-                {
-                    Id = int.Parse(resultSet["teacherid"].ToString()),
-                    FirstName = resultSet["teacherfname"].ToString(),
-                    LastName = resultSet["teacherlname"].ToString(),
-                    EmployeeNumber = resultSet["employeenumber"].ToString(),
-                    HireDate = DateTime.Parse(resultSet["hiredate"].ToString()),
-                    Salary = decimal.Parse(resultSet["salary"].ToString())
-                };
-                teachers.Add(teacher);
-            }
-
-            // Closing the connection
-            connection.Close();
-
-            // Return the list view with the teachers
+            List<Teacher> teachers = _api.ListTeachers(SearchKey);
             return View(teachers);
         }
 
         /// <summary>
         /// This method gets all information on a teacher by their ID and displays it
+        /// Example return data: 
+        /// {
+        ///     "id": 1,
+        ///     "firstName": "Jane",
+        ///     "lastName": "Smith",
+        ///     "employeeNumber": "T12345",
+        ///     "hireDate": "2023-01-01T00:00:00",
+        ///     "salary": 50000.00
+        /// }
         /// </summary>
         /// <param name="id">The ID of the teacher</param>
         /// <returns>
         /// A view displaying the teacher's information
         /// </returns>
-        [HttpGet("Show/{id}")]
+        [HttpGet]
+        [Route("[controller]/Show/{id}")]
         public IActionResult Show(int id)
         {
-            Teacher teacher = null;
-
-            // The object that represents the school db connection
-            SchoolDBContext schoolContext = new SchoolDBContext();
-
-            // (MySqlConnection) we need to connect to the db
-            MySqlConnection connection = schoolContext.AccessDatabase();
-
-            // Open up the connection to our db
-            connection.Open();
-
-            // (MySqlCommand) we need to run an SQL command
-            MySqlCommand command = connection.CreateCommand();
-
-            // Select teacher by ID
-            string sql = "SELECT * FROM teachers WHERE teacherid = @id";
-            command.CommandText = sql;
-            command.Parameters.AddWithValue("@id", id);
-
-            MySqlDataReader resultSet = command.ExecuteReader();
-            // If a teacher is found
-            if (resultSet.Read())
+            Teacher teacher = _api.GetTeacher(id);
+            if (teacher.Id == 0)
             {
-                // Create a new teacher object
-                teacher = new Teacher
-                {
-                    Id = int.Parse(resultSet["teacherid"].ToString()),
-                    FirstName = resultSet["teacherfname"].ToString(),
-                    LastName = resultSet["teacherlname"].ToString(),
-                    EmployeeNumber = resultSet["employeenumber"].ToString(),
-                    HireDate = DateTime.Parse(resultSet["hiredate"].ToString()),
-                    Salary = decimal.Parse(resultSet["salary"].ToString())
-                };
+                return View("NotFound");
             }
-            else
-            {
-                return NotFound("Teacher not found");
-            }
-
-            // Closing the connection
-            connection.Close();
-
-            // Return the show view with the teacher
             return View(teacher);
+
+        }
+
+
+
+        /// <summary>
+        /// This method displays a form to add a new teacher
+        /// </summary>
+        /// <returns>
+        /// A view displaying the form to add a new teacher
+        /// </returns>
+        [HttpGet]
+        [Route("[controller]/New")]
+        public IActionResult New()
+        {
+            return View();
+        }
+
+
+
+        /// <summary>
+        /// This method adds a new teacher to the database
+        /// Example return data: 1
+        /// </summary>
+        /// <param name="NewTeacher">The teacher object to add</param>
+        /// <returns>
+        /// Redirects to the Show view of the newly added teacher
+        /// </returns>
+        [HttpPost]
+        [Route("[controller]/Create")]
+        public IActionResult Create(Teacher NewTeacher)
+        {
+            IActionResult result = _api.AddTeacher(NewTeacher);
+            if (result is CreatedAtActionResult createdResult)
+            {
+                int TeacherId = (int)createdResult.RouteValues["id"];
+                return RedirectToAction("Show", new { id = TeacherId });
+            }
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// This method displays a confirmation page to delete a teacher
+        /// </summary>
+        /// <param name="id">The ID of the teacher to delete</param>
+        /// <returns>
+        /// A view displaying the confirmation page to delete a teacher
+        /// </returns>
+        [HttpGet]
+        [Route("[controller]/DeleteConfirm/{id}")]
+        public IActionResult DeleteConfirm(int id)
+        {
+           
+            Teacher teacher = _api.GetTeacher(id);
+            if (teacher == null)
+            {
+               
+                return View("NotFound");
+            }
+            return View(teacher);
+        }
+
+
+
+        /// <summary>
+        /// This method deletes a teacher from the database
+        /// Example return data: 1
+        /// </summary>
+        /// <param name="id">The ID of the teacher to delete</param>
+        /// <returns>
+        /// Redirects to the List view after deleting the teacher
+        /// </returns>
+        [HttpPost]
+        [Route("[controller]/Delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            IActionResult result = _api.DeleteTeacher(id);
+            if (result is OkResult)
+            {
+                return RedirectToAction("List");
+            }
+            return result;
         }
 
     }
