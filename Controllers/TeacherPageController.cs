@@ -153,5 +153,87 @@ namespace _5125Cummulative1.Controllers
             return result;
         }
 
+
+
+        /// <summary>
+        /// Displays the Edit page for a teacher.
+        /// </summary>
+        /// <param name="id">The ID of the teacher to edit.</param>
+        /// <returns>The Edit view with the teacher's details pre-filled.</returns>
+        [HttpGet]
+        [Route("[controller]/Edit/{id}")]
+        public IActionResult Edit(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid teacher ID.");
+            }
+
+            Teacher teacher = _api.GetTeacher(id);
+
+            if (teacher == null || teacher.Id == 0)
+            {
+                return View("NotFound");
+            }
+
+            return View(teacher);
+        }
+
+
+
+
+        /// <summary>
+        /// Updates a teacher's information in the database.
+        /// </summary>
+        /// <param name="id">The ID of the teacher to update.</param>
+        /// <param name="updatedTeacher">The updated teacher object.</param>
+        /// <returns>Redirects to the List view after a successful update.</returns>
+        [HttpPost]
+        [Route("[controller]/Edit/{id}")]
+        public IActionResult Edit(int id, Teacher updatedTeacher)
+        {
+            if (id != updatedTeacher.Id)
+            {
+                return BadRequest("Teacher ID mismatch.");
+            }
+
+            // Call the API to update the teacher
+            IActionResult result = _api.UpdateTeacher(id, updatedTeacher);
+
+            if (result is OkObjectResult okResult)
+            {
+                // Extract the redirect URL from the API response
+                var response = okResult.Value as dynamic;
+                string redirectUrl = response?.redirectUrl;
+
+                if (!string.IsNullOrEmpty(redirectUrl))
+                {
+                    return Redirect(redirectUrl);
+                }
+
+                // If no redirect URL is provided, fallback to the List page
+                return RedirectToAction("List");
+            }
+
+            // Handle API errors
+            if (result is BadRequestObjectResult badRequestResult)
+            {
+                ModelState.AddModelError("", badRequestResult.Value?.ToString());
+            }
+            else if (result is NotFoundObjectResult notFoundResult)
+            {
+                ModelState.AddModelError("", notFoundResult.Value?.ToString());
+            }
+            else
+            {
+                ModelState.AddModelError("", "An unexpected error occurred.");
+            }
+
+            // Redisplay the form with the current data and error messages
+            return View(updatedTeacher);
+        }
+
+
+
     }
 }

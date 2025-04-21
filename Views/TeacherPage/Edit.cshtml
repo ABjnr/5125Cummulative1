@@ -1,0 +1,86 @@
+﻿@model _5125Cummulative1.Models.Teacher
+
+@{
+    ViewData["Title"] = "Edit Teacher";
+}
+
+<h1>Edit Teacher</h1>
+
+<form id="editTeacherForm" asp-action="Edit" asp-controller="TeacherPage" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="FirstName" class="form-label"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LastName" class="form-label"></label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeeNumber" class="form-label"></label>
+        <input asp-for="EmployeeNumber" class="form-control" />
+        <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HireDate" class="form-label"></label>
+        <input asp-for="HireDate" type="date" class="form-control" />
+        <span asp-validation-for="HireDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Salary" class="form-label"></label>
+        <input asp-for="Salary" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="Salary" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.querySelector("#editTeacherForm").addEventListener("submit", function (e) {
+            const salary = parseFloat(document.querySelector("[name='Salary']").value);
+            const hireDate = new Date(document.querySelector("[name='HireDate']").value);
+            const today = new Date();
+            const firstName = document.querySelector("[name='FirstName']").value.trim();
+            const lastName = document.querySelector("[name='LastName']").value.trim();
+            const employeeNumber = document.querySelector("[name='EmployeeNumber']").value.trim();
+
+            // Validate First Name
+            if (!firstName) {
+                alert("First name is required.");
+                e.preventDefault();
+            }
+
+            // Validate Last Name
+            if (!lastName) {
+                alert("Last name is required.");
+                e.preventDefault();
+            }
+
+            // Validate Employee Number
+            if (!/^T\d+$/.test(employeeNumber)) {
+                alert("Employee number must start with 'T' followed by digits.");
+                e.preventDefault();
+            }
+
+            // Validate Hire Date
+            if (hireDate > today) {
+                alert("Hire date cannot be in the future.");
+                e.preventDefault();
+            }
+
+            // Validate Salary
+            if (isNaN(salary) || salary < 0) {
+                alert("Salary cannot be less than 0.");
+                e.preventDefault();
+            }
+        });
+    </script>
+}

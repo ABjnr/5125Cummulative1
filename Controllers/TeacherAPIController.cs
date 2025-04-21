@@ -208,5 +208,81 @@ namespace _5125Cummulative1.Controllers
         }
 
 
+
+        /// <summary>
+        /// Updates a teacher's information in the database.
+        /// Example request body:
+        /// {
+        ///     "id": 1,
+        ///     "firstName": "UpdatedFirstName",
+        ///     "lastName": "UpdatedLastName",
+        ///     "employeeNumber": "T12345",
+        ///     "hireDate": "2023-01-01T00:00:00",
+        ///     "salary": 60000.00
+        /// }
+        /// </summary>
+        /// <param name="id">The ID of the teacher to update</param>
+        /// <param name="UpdatedTeacher">The updated teacher object</param>
+        /// <returns>
+        /// A success message or an error message
+        /// </returns>
+
+
+
+
+        [HttpPut("UpdateTeacher/{id}")]
+        public IActionResult UpdateTeacher(int id, [FromBody] Teacher UpdatedTeacher)
+        {
+            if (id != UpdatedTeacher.Id)
+            {
+                return BadRequest("Teacher ID mismatch.");
+            }
+
+            if (string.IsNullOrEmpty(UpdatedTeacher.FirstName) || string.IsNullOrEmpty(UpdatedTeacher.LastName))
+            {
+                return BadRequest("Teacher name cannot be empty.");
+            }
+
+            if (UpdatedTeacher.HireDate > DateTime.Now)
+            {
+                return BadRequest("Hire date cannot be in the future.");
+            }
+
+            if (UpdatedTeacher.Salary < 0)
+            {
+                return BadRequest("Salary cannot be less than 0.");
+            }
+
+            using (MySqlConnection Connection = _context.AccessDatabase())
+            {
+                Connection.Open();
+                MySqlCommand Command = Connection.CreateCommand();
+
+                Command.CommandText = "SELECT COUNT(*) FROM teachers WHERE teacherid = @id";
+                Command.Parameters.AddWithValue("@id", id);
+                int count = Convert.ToInt32(Command.ExecuteScalar());
+
+                if (count == 0)
+                {
+                    return NotFound("Teacher not found.");
+                }
+
+                Command.CommandText = "UPDATE teachers SET teacherfname = @FirstName, teacherlname = @LastName, employeenumber = @EmployeeNumber, hiredate = @HireDate, salary = @Salary WHERE teacherid = @id";
+                Command.Parameters.AddWithValue("@FirstName", UpdatedTeacher.FirstName);
+                Command.Parameters.AddWithValue("@LastName", UpdatedTeacher.LastName);
+                Command.Parameters.AddWithValue("@EmployeeNumber", UpdatedTeacher.EmployeeNumber);
+                Command.Parameters.AddWithValue("@HireDate", UpdatedTeacher.HireDate);
+                Command.Parameters.AddWithValue("@Salary", UpdatedTeacher.Salary);
+
+                Command.ExecuteNonQuery();
+
+                // Return success with a hardcoded redirect URL
+                return Ok(new { message = "Teacher updated successfully.", redirectUrl = "/TeacherPage/List" });
+            }
+        }
+
+
+
+
     }
 }
