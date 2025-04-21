@@ -125,5 +125,62 @@ namespace _5125Cummulative1.Controllers
                 return Ok(rowsAffected);
             }
         }
+
+
+
+        /// <summary>
+        /// Updates a student's information in the database.
+        /// </summary>
+        /// <param name="id">The ID of the student to update</param>
+        /// <param name="UpdatedStudent">The updated student object</param>
+        /// <returns>A success message or an error message</returns>
+        [HttpPut("UpdateStudent/{id}")]
+        public IActionResult UpdateStudent(int id, [FromBody] Student UpdatedStudent)
+        {
+            if (id != UpdatedStudent.Id)
+            {
+                return BadRequest("Student ID mismatch.");
+            }
+
+            if (string.IsNullOrEmpty(UpdatedStudent.FirstName) || string.IsNullOrEmpty(UpdatedStudent.LastName))
+            {
+                return BadRequest("Student name cannot be empty.");
+            }
+
+            if (UpdatedStudent.EnrollmentDate > DateTime.Now)
+            {
+                return BadRequest("Enrollment date cannot be in the future.");
+            }
+
+            using (MySqlConnection connection = new SchoolDBContext().AccessDatabase())
+            {
+                connection.Open();
+                MySqlCommand command = connection.CreateCommand();
+
+                // Check if the student exists
+                command.CommandText = "SELECT COUNT(*) FROM students WHERE studentid = @id";
+                command.Parameters.AddWithValue("@id", id);
+                int count = Convert.ToInt32(command.ExecuteScalar());
+
+                if (count == 0)
+                {
+                    return NotFound("Student not found.");
+                }
+
+                // Update the student's information
+                command.CommandText = "UPDATE students SET studentfname = @FirstName, studentlname = @LastName, studentnumber = @StudentNumber, enroldate = @EnrollmentDate WHERE studentid = @id";
+                command.Parameters.AddWithValue("@FirstName", UpdatedStudent.FirstName);
+                command.Parameters.AddWithValue("@LastName", UpdatedStudent.LastName);
+                command.Parameters.AddWithValue("@StudentNumber", UpdatedStudent.StudentNumber);
+                command.Parameters.AddWithValue("@EnrollmentDate", UpdatedStudent.EnrollmentDate);
+
+                command.ExecuteNonQuery();
+
+                return Ok(new { message = "Student updated successfully." });
+            }
+        }
+
+
+
     }
 }

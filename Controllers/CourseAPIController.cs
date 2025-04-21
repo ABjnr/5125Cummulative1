@@ -128,7 +128,75 @@ namespace _5125Cummulative1.Controllers
                 }
 
                 return Ok(rowsAffected);
+            }  
+        }
+
+
+
+
+
+        /// <summary>
+        /// Updates a course's information in the database.
+        /// </summary>
+        /// <param name="id">The ID of the course to update</param>
+        /// <param name="UpdatedCourse">The updated course object</param>
+        /// <returns>A success message or an error message</returns>
+        [HttpPut("UpdateCourse/{id}")]
+        public IActionResult UpdateCourse(int id, [FromBody] Course UpdatedCourse)
+        {
+            if (id != UpdatedCourse.Id)
+            {
+                return BadRequest("Course ID mismatch.");
+            }
+
+            if (string.IsNullOrEmpty(UpdatedCourse.CourseCode) || string.IsNullOrEmpty(UpdatedCourse.CourseName))
+            {
+                return BadRequest("Course code and name cannot be empty.");
+            }
+
+            if (UpdatedCourse.StartDate > UpdatedCourse.FinishDate)
+            {
+                return BadRequest("Start date cannot be after the finish date.");
+            }
+
+            using (MySqlConnection connection = new SchoolDBContext().AccessDatabase())
+            {
+                connection.Open();
+                MySqlCommand command = connection.CreateCommand();
+
+                // Check if the course exists
+                command.CommandText = "SELECT COUNT(*) FROM courses WHERE courseid = @id";
+                command.Parameters.AddWithValue("@id", id);
+                int count = Convert.ToInt32(command.ExecuteScalar());
+
+                if (count == 0)
+                {
+                    return NotFound("Course not found.");
+                }
+
+                // Update the course's information
+                command.CommandText = @"
+            UPDATE courses 
+            SET 
+                coursecode = @CourseCode, 
+                coursename = @CourseName, 
+                teacherid = @TeacherId, 
+                startdate = @StartDate, 
+                finishdate = @FinishDate 
+            WHERE courseid = @id";
+                command.Parameters.AddWithValue("@CourseCode", UpdatedCourse.CourseCode);
+                command.Parameters.AddWithValue("@CourseName", UpdatedCourse.CourseName);
+                command.Parameters.AddWithValue("@TeacherId", UpdatedCourse.TeacherId);
+                command.Parameters.AddWithValue("@StartDate", UpdatedCourse.StartDate);
+                command.Parameters.AddWithValue("@FinishDate", UpdatedCourse.FinishDate);
+
+                command.ExecuteNonQuery();
+
+                return Ok(new { message = "Course updated successfully." });
             }
         }
+
+
+
     }
 }
